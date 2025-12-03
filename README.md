@@ -1,0 +1,1 @@
+# mintrias_app
