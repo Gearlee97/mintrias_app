@@ -2,13 +2,11 @@ import React from "react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-blue-600">Mintrias Dashboard</h2>
-          <p className="mt-2 text-sm text-gray-500">Your app is running successfully 🚀</p>
-        </div>
-      </main>
-    </div>
+    <main className="min-h-screen flex items-center justify-center bg-white">
+      <div className="text-center">
+        <h1 className="text-6xl font-extrabold text-blue-600">Tailwind is working!</h1>
+        <p className="mt-6 text-sm text-gray-500">If you see big blue text — success.</p>
+      </div>
+    </main>
   );
 }
