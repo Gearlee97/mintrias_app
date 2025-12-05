@@ -1,13 +1,20 @@
-import React from "react";
+import Link from "next/link";
 
 export default function Sidebar() {
   return (
     <aside className="w-64 border-r p-4 hidden md:block">
       <nav>
-        <ul className="space-y-2 text-sm">
-          <li>Overview</li>
-          <li>Projects</li>
-          <li>Settings</li>
+        <ul className="space-y-3 text-sm">
+          <li>
+            <Link href="/dashboard" className="hover:text-blue-600">
+              Overview
+            </Link>
+          </li>
+          <li>
+            <Link href="/inventory" className="hover:text-blue-600">
+              Inventory
+            </Link>
+          </li>
         </ul>
       </nav>
     </aside>
