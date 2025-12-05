@@ -1,20 +1,19 @@
+import "./globals.css";
 import React from "react";
-import "./globals.css"; // <- penting: panggil global css (tailwind)
+import Header from./components/Header";
 
 export const metadata = {
   title: "Mintrias",
-    description: "Mintrias App",
-    };
+};
 
-    export default function RootLayout({ children }: { children: React.ReactNode }) {
-      return (
-          <html lang="en" translate="no">
-                <head>
-                        <meta name="google" content="notranslate" />
-                              </head>
-                                    <body className="bg-background text-foreground">
-                                            {children}
-                                                  </body>
-                                                      </html>
-                                                        );
-                                                        }
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" translate="no">
+      <head />
+      <body className="min-h-screen bg-white text-zinc-900">
+        <Header />
+        <main className="max-w-7xl mx-auto p-6">{children}</main>
+      </body>
+    </html>
+  );
+}

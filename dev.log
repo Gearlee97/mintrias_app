@@ -1,0 +1,13 @@
+
+> mintrias_app@0.1.0 dev
+> next dev
+
+   ▲ Next.js 16.0.7 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://10.0.0.219:3000
+
+ ✓ Starting...
+ ✓ Ready in 926ms
+ ○ Compiling / ...
+ GET / 200 in 3.7s (compile: 3.6s, render: 134ms)
+[?25h
