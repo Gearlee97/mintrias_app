@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { claimMachineRewards } from '@/lib/machineService';
+import { claimMachineRewards } from '@/services/machine';
 
 export async function POST(req) {
   try {

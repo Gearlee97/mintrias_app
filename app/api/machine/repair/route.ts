@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { repairMachine } from '@/lib/machineService';
+import { repairMachine } from '@/services/machine';
 
 export async function POST(req) {
   try {
