@@ -12,6 +12,11 @@ export default function Sidebar() {
           <li>
             <Link href="/inventory" className="hover:text-blue-600">Inventory</Link>
           </li>
+          <li>
+  <Link href="/home" className="hover:text-blue-500">
+    Home
+  </Link>
+</li>
         </ul>
       </nav>
     </aside>
