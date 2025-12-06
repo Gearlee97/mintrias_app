@@ -1,35 +1,27 @@
 // engine/types.ts
-export type Tier = 'Common' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic';
+export type Tier = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
 
-export interface LabSlot {
-  id: string; // slot id, ex: "slot-1"
-  miner?: string; // miner item id
-  technician?: string; // tech item id
-  cooler?: string; // cooler item id
+export type ItemRef = {
+  id: string; // e.g. "miner-common-1"
+  tier: Tier;
+  // other fields (name, description...) optional in DB
+};
+
+export type LabSlot = {
+  slotId: number; // 1..5
   unlocked: boolean;
-}
+  miner?: string | null;       // item id string (or undefined)
+  technician?: string | null;  // item id string
+  cooler?: string | null;      // item id string
+};
 
-export interface LabState {
-  slots: LabSlot[]; // 5 slots
-}
+export type LabState = {
+  slots: LabSlot[];
+};
 
-export interface MachineState {
-  id: string;
-  baseRate: number; // IGT/s base
-  durationSec: number; // session duration in seconds
-  healthPct: number; // 0-100
-  running: boolean;
-  progressSec: number;
-  lastClaimAt?: number;
-  // derived:
-  derivedRate?: number;
-  complete?: boolean;
-}
-
-export interface ClaimResult {
-  gross: number;
-  afterHealth: number;
-  electricBill: number;
-  final: number;
-  repairCost: number;
-}
+// Buff result
+export type LabBuffs = {
+  flatAdd: number; // IGT/s
+  multiplier: number; // multiplier
+  extraDurationSec: number;
+};
