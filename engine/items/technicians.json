@@ -1,21 +1,21 @@
 [
-  {"id":"tech-common-01","name":"Wrench Junior","tier":"Common","techPct":0.003,"rarity":"common","desc":"Teknisi dasar, sedikit menambah efisiensi."},
-  {"id":"tech-common-02","name":"Circuit Tuner","tier":"Common","techPct":0.005,"rarity":"common","desc":"Tuner sirkuit untuk minor multiplier."},
-  {"id":"tech-common-03","name":"Flux Assistant","tier":"Common","techPct":0.007,"rarity":"common","desc":"Asisten flux yang bikin mesin lebih halus."},
+  {"id":"tech-common-01","name":"Wrench Junior","tier":"Common","techPct":0.003,"rarity":"common","desc":"Teknisi dasar, sedikit menambah efisiensi.","airdropAllocPercent":0},
+  {"id":"tech-common-02","name":"Circuit Tuner","tier":"Common","techPct":0.005,"rarity":"common","desc":"Tuner sirkuit untuk minor multiplier.","airdropAllocPercent":0},
+  {"id":"tech-common-03","name":"Flux Assistant","tier":"Common","techPct":0.007,"rarity":"common","desc":"Asisten flux yang bikin mesin lebih halus.","airdropAllocPercent":0},
 
-  {"id":"tech-rare-01","name":"Calibration Rig","tier":"Rare","techPct":0.008,"rarity":"rare","desc":"Rig kalibrasi — cocok buat spike kecil."},
-  {"id":"tech-rare-02","name":"Nano Adjuster","tier":"Rare","techPct":0.01,"rarity":"rare","desc":"Penyesuaian nano meningkatkan efisiensi."},
-  {"id":"tech-rare-03","name":"Sync Optimizer","tier":"Rare","techPct":0.012,"rarity":"rare","desc":"Optimizer sinkron untuk rate stabil."},
+  {"id":"tech-rare-01","name":"Calibration Rig","tier":"Rare","techPct":0.008,"rarity":"rare","desc":"Rig kalibrasi — cocok buat spike kecil.","airdropAllocPercent":0},
+  {"id":"tech-rare-02","name":"Nano Adjuster","tier":"Rare","techPct":0.01,"rarity":"rare","desc":"Penyesuaian nano meningkatkan efisiensi.","airdropAllocPercent":0},
+  {"id":"tech-rare-03","name":"Sync Optimizer","tier":"Rare","techPct":0.012,"rarity":"rare","desc":"Optimizer sinkron untuk rate stabil.","airdropAllocPercent":0},
 
-  {"id":"tech-epic-01","name":"Quantum Tuner","tier":"Epic","techPct":0.015,"rarity":"epic","desc":"Tuner kuantum — multiplier terasa."},
-  {"id":"tech-epic-02","name":"Pulse Regulator","tier":"Epic","techPct":0.02,"rarity":"epic","desc":"Regulator pulse, cocok untuk grinder serius."},
-  {"id":"tech-epic-03","name":"Harmonic Controller","tier":"Epic","techPct":0.025,"rarity":"epic","desc":"Kontrol harmonik, dorongan multiplier kuat."},
+  {"id":"tech-epic-01","name":"Quantum Tuner","tier":"Epic","techPct":0.015,"rarity":"epic","desc":"Tuner kuantum — multiplier terasa.","airdropAllocPercent":0.5},
+  {"id":"tech-epic-02","name":"Pulse Regulator","tier":"Epic","techPct":0.02,"rarity":"epic","desc":"Regulator pulse, cocok untuk grinder serius.","airdropAllocPercent":0.5},
+  {"id":"tech-epic-03","name":"Harmonic Controller","tier":"Epic","techPct":0.025,"rarity":"epic","desc":"Kontrol harmonik, dorongan multiplier kuat.","airdropAllocPercent":0.5},
 
-  {"id":"tech-legend-01","name":"Axiom Engineer","tier":"Legendary","techPct":0.03,"rarity":"legendary","desc":"Engineer legendaris, multiplier besar."},
-  {"id":"tech-legend-02","name":"Singularity Mod","tier":"Legendary","techPct":0.035,"rarity":"legendary","desc":"Mod singularity, efektif untuk power users."},
-  {"id":"tech-legend-03","name":"Oracle Array","tier":"Legendary","techPct":0.045,"rarity":"legendary","desc":"Array yang tingkatkan efisiensi drastis."},
+  {"id":"tech-legend-01","name":"Axiom Engineer","tier":"Legendary","techPct":0.03,"rarity":"legendary","desc":"Engineer legendaris, multiplier besar.","airdropAllocPercent":1.0},
+  {"id":"tech-legend-02","name":"Singularity Mod","tier":"Legendary","techPct":0.035,"rarity":"legendary","desc":"Mod singularity, efektif untuk power users.","airdropAllocPercent":1.0},
+  {"id":"tech-legend-03","name":"Oracle Array","tier":"Legendary","techPct":0.045,"rarity":"legendary","desc":"Array yang tingkatkan efisiensi drastis.","airdropAllocPercent":1.0},
 
-  {"id":"tech-mythic-01","name":"Epoch Fabricator","tier":"Mythic","techPct":0.05,"rarity":"mythic","desc":"Mythic tech — rare, high multiplier."},
-  {"id":"tech-mythic-02","name":"Chrono Operator","tier":"Mythic","techPct":0.06,"rarity":"mythic","desc":"Operator chrono — top-tier multiplier."},
-  {"id":"tech-mythic-03","name":"Pantheon Relay","tier":"Mythic","techPct":0.08,"rarity":"mythic","desc":"Relay pantheon, jangan lepas kecuali event."}
+  {"id":"tech-mythic-01","name":"Epoch Fabricator","tier":"Mythic","techPct":0.05,"rarity":"mythic","desc":"Mythic tech — rare, high multiplier.","airdropAllocPercent":3.0},
+  {"id":"tech-mythic-02","name":"Chrono Operator","tier":"Mythic","techPct":0.06,"rarity":"mythic","desc":"Operator chrono — top-tier multiplier.","airdropAllocPercent":3.0},
+  {"id":"tech-mythic-03","name":"Pantheon Relay","tier":"Mythic","techPct":0.08,"rarity":"mythic","desc":"Relay pantheon, jangan lepas kecuali event.","airdropAllocPercent":3.0}
 ]
