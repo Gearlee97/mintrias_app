@@ -1,21 +1,21 @@
 [
-  {"id":"miner-common-01","name":"Drillcore Mk.I","tier":"Common","minerAdd":0.03,"rarity":"common","desc":"Basic drill core — stabil buat pemula.","airdropAllocPercent":0},
-  {"id":"miner-common-02","name":"Pulse Extractor","tier":"Common","minerAdd":0.05,"rarity":"common","desc":"Ekstraktor pulsa sederhana, efisien di early-game.","airdropAllocPercent":0},
-  {"id":"miner-common-03","name":"Pocket Bore","tier":"Common","minerAdd":0.07,"rarity":"common","desc":"Compact bore unit, sedikit lebih kuat.","airdropAllocPercent":0},
+  { "id": "miner-common-1", "name": "Pebble Digger", "tier": "common", "rate": 0.05 },
+  { "id": "miner-common-2", "name": "Rusty Spindle", "tier": "common", "rate": 0.05 },
+  { "id": "miner-common-3", "name": "Bronze Pick", "tier": "common", "rate": 0.05 },
 
-  {"id":"miner-rare-01","name":"Quartz Harvester","tier":"Rare","minerAdd":0.09,"rarity":"rare","desc":"Harvester dengan kristal resonan — plus nyata.","airdropAllocPercent":0},
-  {"id":"miner-rare-02","name":"Arc Sieve","tier":"Rare","minerAdd":0.12,"rarity":"rare","desc":"Memfilter resource dengan efisiensi lebih.","airdropAllocPercent":0},
-  {"id":"miner-rare-03","name":"Helix Drifter","tier":"Rare","minerAdd":0.15,"rarity":"rare","desc":"Desain helix bikin produksi lebih stabil.","airdropAllocPercent":0},
+  { "id": "miner-rare-1", "name": "Flux Bit", "tier": "rare", "rate": 0.10 },
+  { "id": "miner-rare-2", "name": "Quartz Drill", "tier": "rare", "rate": 0.10 },
+  { "id": "miner-rare-3", "name": "Silver Cutter", "tier": "rare", "rate": 0.10 },
 
-  {"id":"miner-epic-01","name":"Aether Core","tier":"Epic","minerAdd":0.28,"rarity":"epic","desc":"Core energi tinggi, cocok untuk mid-game boost.","airdropAllocPercent":0.5},
-  {"id":"miner-epic-02","name":"Vector Digger","tier":"Epic","minerAdd":0.35,"rarity":"epic","desc":"Digger precision — kenaikan output signifikan.","airdropAllocPercent":0.5},
-  {"id":"miner-epic-03","name":"Strata Conductor","tier":"Epic","minerAdd":0.45,"rarity":"epic","desc":"Kuat, stabil, populer di grinder serius.","airdropAllocPercent":0.5},
+  { "id": "miner-epic-1", "name": "Auric Extractor", "tier": "epic", "rate": 0.20 },
+  { "id": "miner-epic-2", "name": "Aero Sieve", "tier": "epic", "rate": 0.20 },
+  { "id": "miner-epic-3", "name": "Lumen Core", "tier": "epic", "rate": 0.20 },
 
-  {"id":"miner-legend-01","name":"Titan Maw","tier":"Legendary","minerAdd":0.6,"rarity":"legendary","desc":"Module legendaris, produksi naik drastis.","airdropAllocPercent":1.0},
-  {"id":"miner-legend-02","name":"Obsidian Ripper","tier":"Legendary","minerAdd":0.8,"rarity":"legendary","desc":"Ripper yang bikin mesin kerja keras (in a good way).","airdropAllocPercent":1.0},
-  {"id":"miner-legend-03","name":"Celestial Drill","tier":"Legendary","minerAdd":1.0,"rarity":"legendary","desc":"Drill top-tier, langka dan mahal.","airdropAllocPercent":1.0},
+  { "id": "miner-legendary-1", "name": "Titan Harvester", "tier": "legendary", "rate": 0.35 },
+  { "id": "miner-legendary-2", "name": "Helix Forger", "tier": "legendary", "rate": 0.35 },
+  { "id": "miner-legendary-3", "name": "Obsidian Maw", "tier": "legendary", "rate": 0.35 },
 
-  {"id":"miner-mythic-01","name":"Primordial Extractor","tier":"Mythic","minerAdd":1.3,"rarity":"mythic","desc":"Mythic module — event/NFT only recommended.","airdropAllocPercent":3.0},
-  {"id":"miner-mythic-02","name":"Eternity Core","tier":"Mythic","minerAdd":1.6,"rarity":"mythic","desc":"Core yang bikin gap ekonomi besar kalau rilis sembarangan.","airdropAllocPercent":3.0},
-  {"id":"miner-mythic-03","name":"Void Harvester","tier":"Mythic","minerAdd":2.0,"rarity":"mythic","desc":"Top-tier extreme — disarankan hanya untuk NFT/event.","airdropAllocPercent":3.0}
+  { "id": "miner-mythic-1", "name": "Aether Prime", "tier": "mythic", "rate": 0.60 },
+  { "id": "miner-mythic-2", "name": "Celestium Core", "tier": "mythic", "rate": 0.60 },
+  { "id": "miner-mythic-3", "name": "Eon Harrow", "tier": "mythic", "rate": 0.60 }
 ]
