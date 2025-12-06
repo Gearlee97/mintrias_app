@@ -8,5 +8,7 @@ export function secondsToHMS(sec: number) {
   const h = Math.floor(s / 3600);
   const m = Math.floor((s % 3600) / 60);
   const ss = s % 60;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-                                                                      }
+  if (h > 0) return `${h}h ${m}m ${ss}s`;
+  if (m > 0) return `${m}m ${ss}s`;
+  return `${ss}s`;
+}
