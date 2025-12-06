@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { applyLabToMachine, stopSession } from '../../../engine/machine';
+import { applyLabToMachine, claimSession } from '../../../engine/machine';
 import { buildDefaultLabState } from '../../../engine/lab';
-import { updateMachineState } from '../../../services/machine';
 import { addPlayerBalance } from '../../../services/player';
+import { updateMachineState } from '../../../services/machine';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
@@ -14,30 +14,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const lab = labState ?? buildDefaultLabState();
     const machineAfterLab = applyLabToMachine(machine, lab);
 
-    // assume stopSession computes final earnings after stopping (implement in engine)
-    const result = stopSession(machineAfterLab);
+    // compute claim
+    const result = claimSession(machineAfterLab, { electricBillPct: 1, decayPerClaim: 5 });
 
+    // new machine state (apply decay etc)
     const newMachineState = {
       ...machineAfterLab,
+      healthPct: Math.max(0, (machineAfterLab.healthPct ?? 100) - 5),
       running: false,
       progressSec: 0,
-      healthPct: Math.max(0, (machineAfterLab.healthPct ?? 100) - (result.decay ?? 0)),
-      lastStopAt: Date.now(),
+      complete: false,
+      lastClaimAt: Date.now(),
     };
 
-    // persist player + machine
-    if (result && typeof result.final === 'number') {
-      await addPlayerBalance(playerId, result.final);
-    }
+    // PERSIST: update player balance & machine state
+    // addPlayerBalance: upserts player and increments gold
+    await addPlayerBalance(playerId, result.final);
+
+    // update machine doc
     await updateMachineState(machine.id ?? machineIdFrom(machine), newMachineState);
 
-    return res.status(200).json({ success: true, result, newMachineState });
+    return res.status(200).json({
+      success: true,
+      result,
+      newMachineState,
+      note: 'Persisted to DB (players + machines).'
+    });
   } catch (err: any) {
-    console.error('stop error', err);
+    console.error('claim error', err);
     return res.status(500).json({ error: 'internal' });
   }
 }
 
+// helper in case machine.id isn't provided
 function machineIdFrom(m: any) {
   return m?.id ?? `machine-${Math.random().toString(36).slice(2,9)}`;
 }
