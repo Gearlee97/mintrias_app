@@ -1,8 +1,7 @@
-// app/layout.tsx
 import "./globals.css";
 import React from "react";
-import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+// NOTE: Header dihapus supaya ga double
 
 export const metadata = {
   title: "Mintrias",
@@ -10,12 +9,11 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-white text-zinc-900 flex flex-col">
-        <Header />
+    <html lang="id">
+      <body className="min-h-screen bg-white text-zinc-900">
         <div className="flex">
           <Sidebar />
-          <main className="flex-1 p-6">{children}</main>
+          <main className="flex-1">{children}</main>
         </div>
       </body>
     </html>
