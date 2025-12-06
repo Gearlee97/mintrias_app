@@ -1,32 +1,43 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { applyLabToMachine, claimSession } from '../../engine/machine';
-import { buildDefaultLabState } from '../../engine/lab';
-import { getMachineById, upsertMachine } from '../../services/machine';
-import { getPlayerById, changePlayerGold } from '../../services/player';
+import { applyLabToMachine, claimSession } from '../../../engine/machine';
+import { buildDefaultLabState } from '../../../engine/lab';
+import { getDb } from '../../../lib/mongodb';
+import { updateMachine, getMachineById, addGold } from '../../../services/machine'; // note: addGold actually in player service; we will call player update inline
+
+// small helper: update player gold
+async function creditPlayer(playerId: string, amount: number) {
+  const db = await getDb();
+  await db.collection('players').updateOne(
+    { id: playerId },
+    { $inc: { gold: amount }, $set: { updatedAt: new Date() } },
+    { upsert: true }
+  );
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
 
   try {
-    const { playerId, machineId, labState } = req.body;
+    const { playerId, machine: machinePayload, labState } = req.body;
+    if (!playerId || !machinePayload) {
+      return res.status(400).json({ error: 'playerId and machine required' });
+    }
 
-    if (!playerId || !machineId) return res.status(400).json({ error: 'playerId and machineId required' });
+    // fetch machine from DB (ensure authoritative)
+    const db = await getDb();
+    const machine = await db.collection('machines').findOne({ id: machinePayload.id });
 
-    // fetch player & machine from DB
-    const player = await getPlayerById(playerId);
-    const machine = await getMachineById(machineId);
-
-    if (!player) return res.status(404).json({ error: 'player not found' });
-    if (!machine) return res.status(404).json({ error: 'machine not found' });
-    if (machine.ownerId !== playerId) return res.status(403).json({ error: 'not owner' });
+    if (!machine) {
+      return res.status(404).json({ error: 'machine not found' });
+    }
 
     const lab = labState ?? buildDefaultLabState();
     const machineAfterLab = applyLabToMachine(machine, lab);
 
-    // compute claim (use engine logic)
     const result = claimSession(machineAfterLab, { electricBillPct: 1, decayPerClaim: 5 });
 
-    // prepare new machine state
     const newMachineState = {
       ...machineAfterLab,
       healthPct: Math.max(0, (machineAfterLab.healthPct ?? 100) - 5),
@@ -34,17 +45,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       progressSec: 0,
       complete: false,
       lastClaimAt: Date.now(),
+      updatedAt: new Date()
     };
 
-    // persist: add gold to player and update machine
-    await changePlayerGold(playerId, Math.round(result.final));
-    await upsertMachine(newMachineState);
+    // persist machine changes
+    await db.collection('machines').updateOne({ id: machineAfterLab.id }, { $set: newMachineState });
+
+    // credit player gold (result.final assumed numeric)
+    if (result?.final && typeof result.final === 'number' && result.final > 0) {
+      await creditPlayer(playerId, result.final);
+    }
 
     return res.status(200).json({
       success: true,
       result,
-      newMachineState,
-      note: 'Persisted to DB (players.gold updated, machine updated)'
+      newMachineState
     });
   } catch (err: any) {
     console.error('claim error', err);

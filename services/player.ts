@@ -5,22 +5,12 @@ export async function getPlayerById(id: string) {
   return db.collection('players').findOne({ id });
 }
 
-export async function upsertPlayer(player: any) {
-  const db = await getDb();
-  await db.collection('players').updateOne(
-    { id: player.id },
-    { $set: { ...player, updatedAt: new Date() }, $setOnInsert: { createdAt: new Date() } },
-    { upsert: true }
-  );
-  return getPlayerById(player.id);
-}
-
-export async function changePlayerGold(id: string, delta: number) {
+export async function addGold(playerId: string, amount: number) {
   const db = await getDb();
   const res = await db.collection('players').findOneAndUpdate(
-    { id },
-    { $inc: { gold: delta }, $set: { updatedAt: new Date() } },
-    { returnDocument: 'after' }
+    { id: playerId },
+    { $inc: { gold: amount }, $set: { updatedAt: new Date() } },
+    { returnDocument: 'after', upsert: true }
   );
   return res.value;
 }
