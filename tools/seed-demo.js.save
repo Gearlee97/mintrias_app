@@ -1,3 +1,4 @@
+
 /**
  * tools/seed-demo.js
  * Usage:
@@ -6,18 +7,13 @@
  *
  * This file WILL NOT run automatically. Run only when you want to seed.
  */
-
-// load .env.local or .env automatically
-require('dotenv').config({ path: '.env.local' });
-
 const { MongoClient } = require('mongodb');
 
-const uri = process.env.MONGODB_URI || process.env.MONGO_URI;
+const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || 'mintrias_app';
 
 if (!uri) {
-  console.error('❌ MONGODB_URI not set in env. Aborting.');
-  console.error('Current env keys:', Object.keys(process.env));
+  console.error('MONGODB_URI not set in env. Aborting.');
   process.exit(1);
 }
 
@@ -25,13 +21,11 @@ async function createIndexes() {
   const client = new MongoClient(uri);
   await client.connect();
   const db = client.db(dbName);
-
-  console.log('⚙️ Creating indexes...');
+  console.log('Creating indexes...');
   await db.collection('players').createIndex({ id: 1 }, { unique: true });
   await db.collection('machines').createIndex({ id: 1 }, { unique: true });
   await db.collection('machines').createIndex({ ownerId: 1 });
-
-  console.log('✅ Indexes created.');
+  console.log('Indexes created.');
   await client.close();
 }
 
@@ -43,18 +37,10 @@ async function seedDemo() {
   const playerId = 'player-demo';
   const machineId = playerId + '-m1';
 
-  console.log('🌱 Seeding demo player & machine...');
-
+  console.log('Seeding demo player & machine...');
   await db.collection('players').updateOne(
     { id: playerId },
-    {
-      $set: {
-        id: playerId,
-        gold: 10000,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    },
+    { $set: { id: playerId, gold: 10000, createdAt: new Date(), updatedAt: new Date() } },
     { upsert: true }
   );
 
@@ -70,19 +56,18 @@ async function seedDemo() {
         running: false,
         progressSec: 0,
         createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+        updatedAt: new Date()
+      }
     },
     { upsert: true }
   );
 
-  console.log('✅ Seed done.');
+  console.log('Seed done.');
   await client.close();
 }
 
 (async () => {
   const arg = process.argv[2];
-
   if (arg === '--create-indexes') {
     await createIndexes();
     process.exit(0);
@@ -90,7 +75,7 @@ async function seedDemo() {
     await seedDemo();
     process.exit(0);
   } else {
-    console.log('ℹ️ No action. Use --create-indexes or --seed-demo');
+    console.log('No action. Use --create-indexes or --seed-demo');
     process.exit(0);
   }
 })();
