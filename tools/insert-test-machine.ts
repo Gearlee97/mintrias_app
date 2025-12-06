@@ -9,10 +9,19 @@ async function main() {
     healthPct: 100,
     running: false,
     startAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
-  const res = await createOrReplaceMachine(doc);
-  console.log("DONE:", res);
+  try {
+    const res = await createOrReplaceMachine(doc);
+    console.log('OK inserted/updated:', res?.id ?? res);
+    console.log('result:', JSON.stringify(res, null, 2));
+    process.exit(0);
+  } catch (err) {
+    console.error('ERROR:', err);
+    process.exit(1);
+  }
 }
 
 main().catch(console.error);
