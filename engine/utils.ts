@@ -1,51 +1,117 @@
 // engine/utils.ts
-import { LabState } from './types';
+import fs from 'fs';
+import path from 'path';
+import { LabState, LabBuffs } from './types';
+import {
+  MINER_RATE,
+  TECH_MULT,
+  COOLER_SEC,
+  MAX_FLAT_ADD,
+  MAX_MULTIPLIER,
+  MAX_EXTRA_DURATION_SEC,
+} from './balances';
+
+// Simple in-memory caches for JSON lookups (works server-side)
+let minersMap: Record<string, any> | null = null;
+let techMap: Record<string, any> | null = null;
+let coolersMap: Record<string, any> | null = null;
+
+function loadItemsOnce() {
+  if (minersMap && techMap && coolersMap) return;
+  const base = path.join(process.cwd(), 'engine', 'items');
+
+  try {
+    const miners = JSON.parse(fs.readFileSync(path.join(base, 'miners.json'), 'utf-8'));
+    const technicians = JSON.parse(fs.readFileSync(path.join(base, 'technicians.json'), 'utf-8'));
+    const coolers = JSON.parse(fs.readFileSync(path.join(base, 'coolers.json'), 'utf-8'));
+
+    minersMap = Object.fromEntries(miners.map((i: any) => [i.id, i]));
+    techMap = Object.fromEntries(technicians.map((i: any) => [i.id, i]));
+    coolersMap = Object.fromEntries(coolers.map((i: any) => [i.id, i]));
+  } catch (err) {
+    // If file reading fails (e.g. client-side build), fallback to empty maps
+    minersMap = minersMap ?? {};
+    techMap = techMap ?? {};
+    coolersMap = coolersMap ?? {};
+  }
+}
+
+function safeIsString(v: any): v is string {
+  return typeof v === 'string' && v.length > 0;
+}
 
 /**
  * computeLabBuffs
- * - menerima lab state (slots + items)
- * - kembalikan multiplier dan flat add untuk rate + duration adjustments
- *
- * For now we simulate simple buff rules:
- * - miner items => flat add to rate (IGT/s)
- * - technician items => percent multiplier (e.g. +10% => 1.10)
- * - cooler items => extra seconds to duration
- *
- * Items are represented by IDs; in prod these would map to DB item records.
+ * - uses item lookup tables (json) and fallback to balances constants
  */
-export function computeLabBuffs(lab: LabState) {
-  let flatAdd = 0; // IGT/s
-  let multiplier = 1; // %
-  let extraDurationSec = 0; // seconds
+export function computeLabBuffs(lab: LabState): LabBuffs {
+  loadItemsOnce();
+
+  let flatAdd = 0;
+  let multiplier = 1;
+  let extraDurationSec = 0;
+
+  if (!lab || !Array.isArray(lab.slots)) {
+    return { flatAdd: 0, multiplier: 1, extraDurationSec: 0 };
+  }
 
   for (const slot of lab.slots) {
-    if (!slot.unlocked) continue;
-    // NOTE: this is placeholder mapping. Replace mapping with DB lookup later.
-    if (slot.miner) {
-      // e.g. miner-common-1 => +0.05, miner-rare-1 => +0.1, epic => +0.2
-      if (slot.miner.includes('common')) flatAdd += 0.05;
-      else if (slot.miner.includes('rare')) flatAdd += 0.10;
-      else if (slot.miner.includes('epic')) flatAdd += 0.20;
-      else if (slot.miner.includes('legendary')) flatAdd += 0.35;
-      else if (slot.miner.includes('mythic')) flatAdd += 0.6;
+    if (!slot || slot.unlocked !== true) continue;
+
+    // miner
+    if (safeIsString(slot.miner)) {
+      const item = minersMap?.[slot.miner];
+      if (item && typeof item.rate === 'number') {
+        flatAdd += item.rate;
+      } else {
+        // fallback: try parse tier from id pattern
+        const t = parseTierFromId(slot.miner);
+        if (t && MINER_RATE[t]) flatAdd += MINER_RATE[t];
+      }
     }
-    if (slot.technician) {
-      // tech-common => +5%, rare => +10% ...
-      if (slot.technician.includes('common')) multiplier *= 1.05;
-      else if (slot.technician.includes('rare')) multiplier *= 1.10;
-      else if (slot.technician.includes('epic')) multiplier *= 1.15;
-      else if (slot.technician.includes('legendary')) multiplier *= 1.20;
-      else if (slot.technician.includes('mythic')) multiplier *= 1.30;
+
+    // technician
+    if (safeIsString(slot.technician)) {
+      const titem = techMap?.[slot.technician];
+      if (titem && typeof titem.mult === 'number') {
+        multiplier *= titem.mult;
+      } else {
+        const t = parseTierFromId(slot.technician);
+        if (t && TECH_MULT[t]) multiplier *= TECH_MULT[t];
+      }
     }
-    if (slot.cooler) {
-      // cooler-common => +10m, etc (seconds)
-      if (slot.cooler.includes('common')) extraDurationSec += 60 * 10;
-      else if (slot.cooler.includes('rare')) extraDurationSec += 60 * 20;
-      else if (slot.cooler.includes('epic')) extraDurationSec += 60 * 45;
-      else if (slot.cooler.includes('legendary')) extraDurationSec += 60 * 90;
-      else if (slot.cooler.includes('mythic')) extraDurationSec += 60 * 180;
+
+    // cooler
+    if (safeIsString(slot.cooler)) {
+      const citem = coolersMap?.[slot.cooler];
+      if (citem && typeof citem.extraSec === 'number') {
+        extraDurationSec += citem.extraSec;
+      } else {
+        const t = parseTierFromId(slot.cooler);
+        if (t && COOLER_SEC[t]) extraDurationSec += COOLER_SEC[t];
+      }
     }
   }
 
+  // caps
+  flatAdd = Math.min(flatAdd, MAX_FLAT_ADD);
+  multiplier = Math.min(multiplier, MAX_MULTIPLIER);
+  extraDurationSec = Math.min(extraDurationSec, MAX_EXTRA_DURATION_SEC);
+
   return { flatAdd, multiplier, extraDurationSec };
 }
+
+/** 
+ * parseTierFromId
+ * expects id like "miner-common-1" or "tech-rare-2"
+ */
+function parseTierFromId(id: string): keyof typeof MINER_RATE | null {
+  if (!safeIsString(id)) return null;
+  const parts = id.split('-');
+  // find known tier in parts
+  const tiers = ['common', 'rare', 'epic', 'legendary', 'mythic'];
+  for (const p of parts) {
+    if (tiers.includes(p)) return p as keyof typeof MINER_RATE;
+  }
+  return null;
+                                 }
