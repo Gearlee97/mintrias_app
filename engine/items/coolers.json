@@ -1,21 +1,21 @@
 [
-  {"id":"cooler-common-01","name":"Breeze Vent","tier":"Common","coolerDurationPct":0.01,"rarity":"common","desc":"Suhu stabil, durasi sedikit naik.","airdropAllocPercent":0},
-  {"id":"cooler-common-02","name":"Fluid Radiator","tier":"Common","coolerDurationPct":0.02,"rarity":"common","desc":"Radiator cairan, efisiensi durasi.","airdropAllocPercent":0},
-  {"id":"cooler-common-03","name":"Nano Fan","tier":"Common","coolerDurationPct":0.03,"rarity":"common","desc":"Kipas nano, tahan lama untuk sesi pendek.","airdropAllocPercent":0},
+  { "id": "cooler-common-1", "name": "Fan Coil", "tier": "common", "extraSec": 600 },
+  { "id": "cooler-common-2", "name": "Chill Tube", "tier": "common", "extraSec": 600 },
+  { "id": "cooler-common-3", "name": "Draft Ring", "tier": "common", "extraSec": 600 },
 
-  {"id":"cooler-rare-01","name":"Cryo Coil","tier":"Rare","coolerDurationPct":0.03,"rarity":"rare","desc":"Coil cryo, tambah durasi gameplay.","airdropAllocPercent":0},
-  {"id":"cooler-rare-02","name":"Phase Chiller","tier":"Rare","coolerDurationPct":0.04,"rarity":"rare","desc":"Chiller fase untuk sesi lebih lama.","airdropAllocPercent":0},
-  {"id":"cooler-rare-03","name":"Thermal Matrix","tier":"Rare","coolerDurationPct":0.05,"rarity":"rare","desc":"Matrix thermal, cocok mid-game.","airdropAllocPercent":0},
+  { "id": "cooler-rare-1", "name": "Cryo Injector", "tier": "rare", "extraSec": 1200 },
+  { "id": "cooler-rare-2", "name": "Bore Radiant", "tier": "rare", "extraSec": 1200 },
+  { "id": "cooler-rare-3", "name": "Zephyr Grid", "tier": "rare", "extraSec": 1200 },
 
-  {"id":"cooler-epic-01","name":"Glacier Core","tier":"Epic","coolerDurationPct":0.06,"rarity":"epic","desc":"Core glacier, perpanjang session signifikan.","airdropAllocPercent":0.5},
-  {"id":"cooler-epic-02","name":"Polar Exchanger","tier":"Epic","coolerDurationPct":0.07,"rarity":"epic","desc":"Exchanger polar untuk endurance.","airdropAllocPercent":0.5},
-  {"id":"cooler-epic-03","name":"Aero Stabilizer","tier":"Epic","coolerDurationPct":0.09,"rarity":"epic","desc":"Stabilizer aerodinamis, durasi meningkat.","airdropAllocPercent":0.5},
+  { "id": "cooler-epic-1", "name": "Glacier Heart", "tier": "epic", "extraSec": 2700 },
+  { "id": "cooler-epic-2", "name": "Hail Matrix", "tier": "epic", "extraSec": 2700 },
+  { "id": "cooler-epic-3", "name": "Nimbus Coil", "tier": "epic", "extraSec": 2700 },
 
-  {"id":"cooler-legend-01","name":"Halo Condenser","tier":"Legendary","coolerDurationPct":0.10,"rarity":"legendary","desc":"Condenser legendaris, sesi jauh lebih lama.","airdropAllocPercent":1.0},
-  {"id":"cooler-legend-02","name":"Zenith Cooler","tier":"Legendary","coolerDurationPct":0.12,"rarity":"legendary","desc":"Cooler zenith — stabilitas tinggi.","airdropAllocPercent":1.0},
-  {"id":"cooler-legend-03","name":"Abyssal Radiant","tier":"Legendary","coolerDurationPct":0.15,"rarity":"legendary","desc":"Radiant langka buat sesi epik.","airdropAllocPercent":1.0},
+  { "id": "cooler-legendary-1", "name": "Pelagic Frost", "tier": "legendary", "extraSec": 5400 },
+  { "id": "cooler-legendary-2", "name": "Cryo Bastion", "tier": "legendary", "extraSec": 5400 },
+  { "id": "cooler-legendary-3", "name": "Void Radiator", "tier": "legendary", "extraSec": 5400 },
 
-  {"id":"cooler-mythic-01","name":"Continuum Siphon","tier":"Mythic","coolerDurationPct":0.18,"rarity":"mythic","desc":"Siphon mythic, durasi sangat panjang.","airdropAllocPercent":3.0},
-  {"id":"cooler-mythic-02","name":"Eon Cryostat","tier":"Mythic","coolerDurationPct":0.20,"rarity":"mythic","desc":"Cryostat eon — untuk pemain top.","airdropAllocPercent":3.0},
-  {"id":"cooler-mythic-03","name":"Entropy Brake","tier":"Mythic","coolerDurationPct":0.25,"rarity":"mythic","desc":"Brake entropy, extreme duration multiplier.","airdropAllocPercent":3.0}
+  { "id": "cooler-mythic-1", "name": "Eternal Dew", "tier": "mythic", "extraSec": 10800 },
+  { "id": "cooler-mythic-2", "name": "Aurora Chiller", "tier": "mythic", "extraSec": 10800 },
+  { "id": "cooler-mythic-3", "name": "Abyssal Frigid", "tier": "mythic", "extraSec": 10800 }
 ]
