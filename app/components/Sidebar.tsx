@@ -7,16 +7,22 @@ export default function Sidebar() {
       <nav>
         <ul className="space-y-3 text-sm">
           <li>
-            <Link href="/dashboard" className="hover:text-blue-600">Overview</Link>
+            <Link href="/dashboard" className="hover:text-blue-600">
+              Overview
+            </Link>
           </li>
+
           <li>
-            <Link href="/inventory" className="hover:text-blue-600">Inventory</Link>
+            <Link href="/inventory" className="hover:text-blue-600">
+              Inventory
+            </Link>
           </li>
+
           <li>
-  <Link href="/home" className="hover:text-blue-500">
-    Home
-  </Link>
-</li>
+            <Link href="/home" className="hover:text-blue-500">
+              Home
+            </Link>
+          </li>
         </ul>
       </nav>
     </aside>
