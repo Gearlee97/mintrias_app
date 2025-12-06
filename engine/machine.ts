@@ -1,131 +1,53 @@
 // engine/machine.ts
-import { clamp, toFixedNumber } from "./utils";
-import { MachineConfig, MachineState, ClaimResult } from "./types";
-import {
-  DEFAULT_SESSION_DURATION_SEC,
-  DEFAULT_BASE_RATE,
-  DEFAULT_DECAY_PER_CLAIM,
-  DEFAULT_REPAIR_PCT,
-} from "./constants";
+import { MachineState, ClaimResult } from './types';
+import { LabState, LabSlot } from './types';
+import { computeLabBuffs } from './utils';
 
 /**
- * MachineEngine
- * - Pure logic for one machine session
- * - Methods: start, tick, claim, repair, applyLabBuffs, snapshot
+ * applyLabToMachine: compute derived rate and duration based on lab
  */
-export class MachineEngine {
-  config: Required<MachineConfig>;
-  state: MachineState;
+export function applyLabToMachine(machine: MachineState, lab: LabState): MachineState {
+  const { flatAdd, multiplier, extraDurationSec } = computeLabBuffs(lab);
+  const derivedRate = +( (machine.baseRate + flatAdd) * multiplier ).toFixed(4);
+  const duration = Math.max(30, machine.durationSec + extraDurationSec); // safety min 30s
+  return { ...machine, derivedRate, durationSec: duration };
+}
 
-  constructor(cfg?: MachineConfig) {
-    this.config = {
-      id: cfg?.id ?? "machine:default",
-      tier: cfg?.tier ?? "Common",
-      baseRate: cfg?.baseRate ?? DEFAULT_BASE_RATE,
-      durationSec: cfg?.durationSec ?? DEFAULT_SESSION_DURATION_SEC,
-      decayPerClaimPct: cfg?.decayPerClaimPct ?? DEFAULT_DECAY_PER_CLAIM,
-      repairPct: cfg?.repairPct ?? DEFAULT_REPAIR_PCT,
-    };
+/**
+ * computeGross: total produced in one session (derivedRate * duration)
+ */
+export function computeGrossProduction(machine: MachineState): number {
+  const rate = machine.derivedRate ?? machine.baseRate;
+  const duration = machine.durationSec;
+  // careful rounding: keep 4 decimals, but final gold is floored at claim time
+  return +(rate * duration);
+}
 
-    this.state = {
-      running: false,
-      complete: false,
-      progressSec: 0,
-      durationSec: this.config.durationSec,
-      derivedRate: this.config.baseRate,
-      healthPct: 100,
-      lastStartAt: undefined,
-    };
-  }
+/**
+ * computeRepairCost: as user requested, repair cost is percentage of session gross
+ * They said "Rerepair cost itu persentase nya 1% dari total hasil mining per sesi masing-masing user"
+ * So repairCost = ceil(gross * 1%)
+ */
+export function computeRepairCost(machine: MachineState): number {
+  const gross = computeGrossProduction(machine);
+  const pct = 0.01; // 1%
+  return Math.ceil(gross * pct);
+}
 
-  /** apply module buffs from lab (minerAdd: IGT/s, techMultiplier decimal, coolerDurationMultiplier decimal) */
-  applyLabBuffs(buffs: { minerAddTotal: number; techMultiplier: number; coolerDurationMultiplier: number }) {
-    const base = this.config.baseRate;
-    const afterMiner = base + (buffs.minerAddTotal || 0);
-    const afterTech = toFixedNumber(afterMiner * (buffs.techMultiplier || 1), 6);
-    const finalDuration = Math.max(1, Math.floor(this.config.durationSec * (buffs.coolerDurationMultiplier || 1)));
-    this.state.derivedRate = afterTech;
-    this.state.durationSec = finalDuration;
-    return { derivedRate: this.state.derivedRate, durationSec: this.state.durationSec };
-  }
-
-  start() {
-    if (this.state.healthPct <= 0) throw new Error("Machine broken");
-    if (this.state.running) return false;
-    this.state.running = true;
-    this.state.complete = false;
-    this.state.progressSec = 0;
-    this.state.lastStartAt = Date.now();
-    return true;
-  }
-
-  tick(deltaSec: number) {
-    if (!this.state.running) return;
-    this.state.progressSec += deltaSec;
-    if (this.state.progressSec >= this.state.durationSec) {
-      this.state.progressSec = this.state.durationSec;
-      this.state.running = false;
-      this.state.complete = true;
-    }
-  }
-
-  computeGross(): number {
-    return toFixedNumber(this.state.derivedRate * this.state.durationSec, 4);
-  }
-
-  computeRepairCost(): number {
-    const gross = this.computeGross();
-    const missingPct = Math.max(0, 100 - this.state.healthPct) / 100; // 0..1
-    const repairDecimal = (this.config.repairPct ?? DEFAULT_REPAIR_PCT) / 100; // 0.01
-    const cost = Math.ceil(gross * missingPct * repairDecimal);
-    return Math.max(0, cost);
-  }
-
-  claim(electricBillPct = 1): ClaimResult {
-    if (!this.state.complete) throw new Error("Session not complete");
-    const gross = Math.floor(this.computeGross());
-    const healthPct = Math.max(0, Math.round(this.state.healthPct));
-    const afterHealth = Math.floor(gross * (healthPct / 100));
-    const bill = Math.floor(afterHealth * (electricBillPct / 100));
-    const final = Math.max(0, afterHealth - bill);
-
-    this.state.healthPct = clamp(this.state.healthPct - this.config.decayPerClaimPct, 0, 100);
-    this.state.complete = false;
-    this.state.progressSec = 0;
-    this.state.running = false;
-    this.state.lastStartAt = undefined;
-
-    return {
-      gross,
-      bill,
-      final,
-      healthAfter: Math.round(this.state.healthPct),
-    };
-  }
-
-  repair() {
-    this.state.healthPct = 100;
-    return true;
-  }
-
-  snapshot() {
-    return {
-      running: this.state.running,
-      complete: this.state.complete,
-      progressSec: this.state.progressSec,
-      durationSec: this.state.durationSec,
-      percent: Math.round((this.state.progressSec / this.state.durationSec) * 100),
-      derivedRate: this.state.derivedRate,
-      healthPct: Math.round(this.state.healthPct),
-      grossEst: Math.floor(this.computeGross()),
-    };
-  }
-
-  setHealth(h: number) {
-    this.state.healthPct = clamp(h, 0, 100);
-  }
-
-  setDuration(sec: number) {
-    this.state.durationSec = sec;
-  }
-  }
+/**
+ * claimSession: calculates final gold after health, bill, etc.
+ * - afterHealth = floor(gross * (healthPct/100))
+ * - electric bill = 1% (configurable) of afterHealth
+ * - final = afterHealth - electricBill
+ * - machine health decays by DECAY_PER_CLAIM (e.g., 5)
+ */
+export function claimSession(machine: MachineState, opts?: { electricBillPct?: number; decayPerClaim?: number; }) : ClaimResult {
+  const electricBillPct = opts?.electricBillPct ?? 1; // 1%
+  const decayPerClaim = opts?.decayPerClaim ?? 5; // health loss per claim - handled by caller update
+  const gross = Math.floor( computeGrossProduction(machine) );
+  const afterHealth = Math.floor( gross * ( (machine.healthPct ?? 100) / 100 ) );
+  const bill = Math.floor( afterHealth * (electricBillPct / 100) );
+  const final = Math.max(0, afterHealth - bill);
+  const repairCost = computeRepairCost(machine);
+  return { gross, afterHealth, electricBill: bill, final, repairCost };
+}
