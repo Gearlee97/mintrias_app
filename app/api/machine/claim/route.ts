@@ -8,7 +8,8 @@ export async function POST(req) {
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 
     const result = await claimMachineRewards(id);
-    return NextResponse.json({ success: true, ...result });
+    const { success: _s, ...rest } = result;
+    return NextResponse.json({ success: true, ...rest });
   } catch (err) {
     return NextResponse.json({ error: 'internal' }, { status: 500 });
   }
