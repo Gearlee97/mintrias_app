@@ -1,5 +1,5 @@
 // services/machine.ts
-import { getDb } from '../lib/mongodb.ts';
+import { getDb } from '../lib/mongodb';
 
 /* ===========================
    BASE HELPERS (VERSI LAMA)
